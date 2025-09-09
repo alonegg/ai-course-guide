@@ -99,5 +99,7 @@ temp/
 
 # Large files that shouldn't be in git
 *.pdf
-*.html
 *_files/
+
+# Allow index.html (Vite entry point)
+!index.html
