@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MessageSquare, Lightbulb, Copy, Check, ArrowRight, X } from 'lucide-react';
+import { Lightbulb, Copy, Check, ArrowRight, X } from 'lucide-react';
 import { promptTemplate, examplePrompt } from '../data/templates';
 
 const CollaborationSection: React.FC = () => {
@@ -179,7 +179,7 @@ const CollaborationSection: React.FC = () => {
                         <h4 className="text-xl font-bold text-white">{field.label}</h4>
                       </div>
                       <button
-                        onClick={() => copyToClipboard(promptTemplate[field.key as keyof typeof promptTemplate], field.key)}
+                        onClick={() => copyToClipboard(promptTemplate[field.key as keyof typeof promptTemplate] || '', field.key)}
                         className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors duration-300"
                       >
                         {copiedField === field.key ? (

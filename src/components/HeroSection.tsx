@@ -41,11 +41,8 @@ const HeroSection: React.FC = () => {
         {/* 核心理念 */}
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 sm:p-8 mb-8 border border-white/20">
           <div className="mb-6">
-            <p className="text-lg text-white/95 mb-4">
-              <span className="font-semibold text-yellow-300">"今天的分享，我给自己的目标是："</span>
-            </p>
             <p className="text-xl text-white font-medium mb-4">
-              无论你的AI知识基础如何，在听完这一个小时的分享后，让你能无缝上手，并且能建立起自己的AI知识地图。
+              建立起自己的AI知识地图。
             </p>
             <p className="text-white/90">
               在下次遇到学习、作业的一些任务时，你可以找到那个最让你得心应手的工具。

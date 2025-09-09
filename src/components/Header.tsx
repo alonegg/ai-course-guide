@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Search } from 'lucide-react';
 import { navigationItems } from '../data/navigation';
 import { scrollToSection } from '../utils';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,6 +21,26 @@ const Header: React.FC = () => {
     const sectionId = href.replace('#', '');
     scrollToSection(sectionId);
     setIsMenuOpen(false);
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      // 简单的搜索逻辑：根据关键词跳转到相关区域
+      const query = searchQuery.toLowerCase();
+      if (query.includes('工具') || query.includes('ai') || query.includes('模型')) {
+        scrollToSection('ai-tools');
+      } else if (query.includes('场景') || query.includes('案例') || query.includes('实践')) {
+        scrollToSection('scenarios');
+      } else if (query.includes('协作') || query.includes('提示') || query.includes('prompt')) {
+        scrollToSection('collaboration');
+      } else if (query.includes('成长') || query.includes('学习')) {
+        scrollToSection('growth');
+      } else {
+        scrollToSection('quick-nav');
+      }
+      setSearchQuery('');
+    }
   };
 
   return (
@@ -44,9 +65,31 @@ const Header: React.FC = () => {
             </h1>
           </div>
 
+          {/* Search Box */}
+          <div className="hidden md:flex flex-1 max-w-md mx-8">
+            <form onSubmit={handleSearch} className="w-full">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="搜索AI工具、场景或教程..."
+                  className={`w-full px-4 py-2 pl-10 rounded-full text-sm transition-all duration-300 ${
+                    isScrolled
+                      ? 'bg-gray-100 text-gray-900 placeholder-gray-500 focus:bg-white focus:ring-2 focus:ring-blue-500'
+                      : 'bg-white/20 text-white placeholder-white/70 focus:bg-white/30 focus:ring-2 focus:ring-white/50'
+                  } focus:outline-none`}
+                />
+                <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 ${
+                  isScrolled ? 'text-gray-400' : 'text-white/70'
+                }`} />
+              </div>
+            </form>
+          </div>
+
           {/* Desktop Navigation */}
           <nav className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-4">
+            <div className="flex items-baseline space-x-4">
               {navigationItems.map((item) => (
                 <button
                   key={item.id}
@@ -82,6 +125,22 @@ const Header: React.FC = () => {
       {/* Mobile Navigation */}
       {isMenuOpen && (
         <div className="md:hidden bg-white/95 backdrop-blur-md border-t border-gray-200">
+          {/* Mobile Search */}
+          <div className="px-4 pt-4 pb-2">
+            <form onSubmit={handleSearch}>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="搜索AI工具、场景或教程..."
+                  className="w-full px-4 py-2 pl-10 rounded-full text-sm bg-gray-100 text-gray-900 placeholder-gray-500 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              </div>
+            </form>
+          </div>
+          
           <div className="px-2 pt-2 pb-3 space-y-1">
             {navigationItems.map((item) => (
               <button
