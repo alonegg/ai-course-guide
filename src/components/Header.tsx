@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Menu, X, Search } from 'lucide-react';
 import { navigationItems } from '../data/navigation';
 import { scrollToSection } from '../utils';
+import { analytics } from '../utils/analytics';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -19,6 +20,8 @@ const Header: React.FC = () => {
 
   const handleNavClick = (href: string) => {
     const sectionId = href.replace('#', '');
+    // 跟踪导航点击事件
+    analytics.trackScrollToSection(sectionId);
     scrollToSection(sectionId);
     setIsMenuOpen(false);
   };
@@ -26,19 +29,25 @@ const Header: React.FC = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
+      // 跟踪搜索事件
+      analytics.trackSearch(searchQuery.trim());
+      
       // 简单的搜索逻辑：根据关键词跳转到相关区域
       const query = searchQuery.toLowerCase();
+      let targetSection = 'quick-nav';
+      
       if (query.includes('工具') || query.includes('ai') || query.includes('模型')) {
-        scrollToSection('ai-tools');
+        targetSection = 'ai-tools';
       } else if (query.includes('场景') || query.includes('案例') || query.includes('实践')) {
-        scrollToSection('scenarios');
+        targetSection = 'scenarios';
       } else if (query.includes('协作') || query.includes('提示') || query.includes('prompt')) {
-        scrollToSection('collaboration');
+        targetSection = 'collaboration';
       } else if (query.includes('成长') || query.includes('学习')) {
-        scrollToSection('growth');
-      } else {
-        scrollToSection('quick-nav');
+        targetSection = 'growth';
       }
+      
+      scrollToSection(targetSection);
+      analytics.trackScrollToSection(targetSection);
       setSearchQuery('');
     }
   };
@@ -59,7 +68,10 @@ const Header: React.FC = () => {
               className={`text-xl font-bold cursor-pointer transition-colors duration-300 ${
                 isScrolled ? 'text-gray-900' : 'text-white'
               }`}
-              onClick={() => scrollToSection('hero')}
+              onClick={() => {
+                analytics.trackScrollToSection('hero');
+                scrollToSection('hero');
+              }}
             >
               大学生AI使用指南
             </h1>

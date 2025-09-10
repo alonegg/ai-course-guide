@@ -1,5 +1,6 @@
 import React from 'react';
 import { BookOpen, FileText, Search, Code, Palette, Presentation, Users, Calculator } from 'lucide-react';
+import { analytics } from '../utils/analytics';
 
 interface QuickNavItem {
   id: string;
@@ -78,7 +79,11 @@ const quickNavItems: QuickNavItem[] = [
 ];
 
 const QuickNavigationSection: React.FC = () => {
-  const scrollToSection = (sectionId: string) => {
+  const scrollToSection = (sectionId: string, itemTitle: string) => {
+    // 跟踪快速导航点击事件
+    analytics.trackQuickNavClick(itemTitle);
+    analytics.trackScrollToSection(sectionId);
+    
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ 
@@ -104,7 +109,7 @@ const QuickNavigationSection: React.FC = () => {
           {quickNavItems.map((item) => (
             <div
               key={item.id}
-              onClick={() => scrollToSection(item.targetSection)}
+              onClick={() => scrollToSection(item.targetSection, item.title)}
               className="group cursor-pointer bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 overflow-hidden"
             >
               <div className={`h-2 bg-gradient-to-r ${item.color}`}></div>

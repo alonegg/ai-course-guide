@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Brain, Eye, Headphones, Zap } from 'lucide-react';
 import { aiTools } from '../data/aiTools';
 import ToolCard from './ToolCard';
+import { analytics } from '../utils/analytics';
 
 const AIToolsSection: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -37,7 +38,10 @@ const AIToolsSection: React.FC = () => {
             return (
               <button
                 key={category.id}
-                onClick={() => setSelectedCategory(category.id)}
+                onClick={() => {
+                  analytics.trackButtonClick(`分类筛选-${category.name}`, 'ai-tools');
+                  setSelectedCategory(category.id);
+                }}
                 className={`flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300 ${
                   selectedCategory === category.id
                     ? 'bg-blue-600 text-white shadow-lg'

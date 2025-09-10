@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ExternalLink, Info } from 'lucide-react';
 import { AITool } from '../types';
+import { analytics } from '../utils/analytics';
 
 interface ToolCardProps {
   tool: AITool;
@@ -10,6 +11,9 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const handleVisit = () => {
+    // 跟踪工具点击事件
+    analytics.trackToolClick(tool.name, tool.category);
+    analytics.trackLinkClick(tool.link, tool.name);
     window.open(tool.link, '_blank', 'noopener,noreferrer');
   };
 

@@ -3,6 +3,7 @@ import { BookOpen, Presentation, Users, TrendingUp, ChevronRight, ExternalLink, 
 import { scenarios } from '../data/scenarios';
 import { aiTools } from '../data/aiTools';
 import { getToolById } from '../utils';
+import { analytics } from '../utils/analytics';
 
 const ScenariosSection: React.FC = () => {
   const [activeScenario, setActiveScenario] = useState(scenarios[0].id);
@@ -77,9 +78,11 @@ const ScenariosSection: React.FC = () => {
     ]
   };
 
-  const copyToClipboard = async (text: string, promptId: string) => {
+  const copyToClipboard = async (text: string, promptId: string, templateTitle: string) => {
     try {
       await navigator.clipboard.writeText(text);
+      // 跟踪模板复制事件
+      analytics.trackTemplateCopy(templateTitle);
       setCopiedPrompt(promptId);
       setTimeout(() => setCopiedPrompt(null), 2000);
     } catch (err) {
@@ -110,7 +113,10 @@ const ScenariosSection: React.FC = () => {
             return (
               <button
                 key={scenario.id}
-                onClick={() => setActiveScenario(scenario.id)}
+                onClick={() => {
+                  analytics.trackButtonClick(`场景切换-${scenario.title}`, 'scenarios');
+                  setActiveScenario(scenario.id);
+                }}
                 className={`flex items-center px-6 py-4 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 ${
                   isActive
                     ? `bg-gradient-to-r ${colorClass} text-white shadow-lg`
@@ -192,7 +198,11 @@ const ScenariosSection: React.FC = () => {
                       {tool.description}
                     </p>
                     <button
-                      onClick={() => window.open(tool.link, '_blank')}
+                      onClick={() => {
+                        analytics.trackToolClick(tool.name, tool.category);
+                        analytics.trackLinkClick(tool.link, tool.name);
+                        window.open(tool.link, '_blank');
+                      }}
                       className="flex items-center text-primary hover:text-primary/80 font-medium text-sm transition-colors duration-300"
                     >
                       <span className="mr-1">立即使用</span>
@@ -215,7 +225,7 @@ const ScenariosSection: React.FC = () => {
                     <div className="flex items-center justify-between mb-3">
                       <h5 className="font-semibold text-gray-900">{template.title}</h5>
                       <button
-                        onClick={() => copyToClipboard(template.prompt, `${currentScenario.id}-${index}`)}
+                        onClick={() => copyToClipboard(template.prompt, `${currentScenario.id}-${index}`, template.title)}
                         className="flex items-center px-3 py-1 bg-blue-500 text-white rounded-full text-sm hover:bg-blue-600 transition-colors duration-300"
                       >
                         {copiedPrompt === `${currentScenario.id}-${index}` ? (
